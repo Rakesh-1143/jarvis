@@ -1,0 +1,403 @@
+# Jarvis settings. Edit and restart Jarvis.
+
+wake_word: jarvis          # say this to wake Jarvis
+listen_timeout: 5          # seconds to wait for a command after "Yes?"
+greeting: beep             # after the wake word: "beep" (fastest) or words to say, e.g. "Yes?"
+follow_up_seconds: 6       # after a reply, keep listening this long without the wake word (0 = off)
+exit_phrases:              # say one of these to quit Jarvis
+  - goodbye
+  - exit jarvis
+  - quit jarvis
+# ("stop listening" now pauses Jarvis instead; say "Jarvis, start listening" to wake it up.)
+
+# Intents that need a spoken "yes" before they run.
+confirm_intents: [shutdown, restart, sleep, empty_recycle_bin, list_clear]
+yes_words: ["yes", "yeah", "yep", "sure", "do it", "confirm", "ok", "okay"]   # keep the quotes
+
+voice:
+  rate: 180                # words per minute
+  volume: 1.0              # 0.0 to 1.0
+  voice_name: ""           # part of a Windows voice name, e.g. "Zira". Empty = default
+
+stt:
+  engine: vosk             # vosk (the only option for now)
+  model_path: models/vosk-model-small-en-us-0.15
+  wake_engine: vosk        # vosk | openwakeword (say "hey Jarvis"; pip install openwakeword)
+  wake_sensitivity: 0.5    # 0.1 = few wakes .. 0.9 = wakes easily. "make the wake word more sensitive" saves to wake_file
+  wake_model: ""           # optional own .onnx model
+  languages: [en]          # e.g. [en, hi]; "understand Hindi" changes this by voice (saved in multilang: file)
+wake_file: ~/.jarvis/wake.json
+
+# App names you can say -> program to start. Used by "open <app>".
+apps:
+  notepad: notepad.exe
+  calculator: calc.exe
+  paint: mspaint.exe
+  explorer: explorer.exe
+  chrome: chrome.exe   # Windows finds it wherever it is installed
+  edge: msedge.exe
+  word: winword.exe
+  excel: excel.exe
+  vs code: code
+
+search_url: "https://www.google.com/search?q={query}"
+screenshot_folder: "~/Pictures/Jarvis"
+
+log_file: jarvis.log
+
+# ---------- AI brain (answers anything the built-in commands don't know) ----------
+# Get a key at https://console.anthropic.com -> API Keys. Paste it below, or better,
+# set the Windows environment variable ANTHROPIC_API_KEY (then leave api_key empty).
+# Without a key Jarvis still does all built-in commands, offline.
+ai:
+  enabled: true
+  api_key: ""
+  model: claude-opus-5-5     # Claude model. claude-haiku-5-5 is faster and cheaper, less smart
+  effort: low                # low = fastest replies; medium or high = smarter but slower
+  web_search: true           # let the AI look up live facts (scores, prices, recent events)
+  answer_questions: true     # "what is / who is ..." -> spoken answer instead of opening Google
+  history_turns: 6           # past exchanges remembered, for follow-up questions
+  stream: true               # start speaking the first sentence while the rest is still coming
+
+# ---------- other features ----------
+weather:
+  city: ""                   # empty = your current location (from your internet connection)
+  units: metric              # metric (Celsius) or imperial (Fahrenheit)
+
+news:                        # Google News RSS. Change hl/gl/ceid for your country, e.g. hl=en-IN&gl=IN&ceid=IN:en
+  feed: "https://news.google.com/rss?hl=en&gl=US&ceid=US:en"
+  search: "https://news.google.com/rss/search?q={query}&hl=en&gl=US&ceid=US:en"
+
+notes_file: "~/Documents/Jarvis notes.txt"
+music_url: "https://www.youtube.com/results?search_query={query}"   # used by "play <song>"
+
+# Names you can say in "send an email to <name>" or "whatsapp <name> saying ...".
+# Phone numbers need the country code.
+contacts: {}
+#  mom:
+#    email: mom@example.com
+#    phone: "+91 98765 43210"
+
+whatsapp:                  # needs the WhatsApp Desktop app
+  auto_send: false         # false = opens the chat with your message, you press Enter
+                           # true  = Jarvis asks "are you sure?" and presses Enter for you
+  send_delay: 6            # seconds to wait for WhatsApp to open before pressing Enter
+
+memory_file: "~/Documents/Jarvis memory.txt"         # "remember that ..." facts
+reminders_file: "~/Documents/Jarvis reminders.json"  # reminders survive a restart
+
+# Say the name (e.g. "good morning") or "start work mode". Each step is a normal command.
+routines:
+  work mode:
+    - open chrome
+    - open vs code
+    - set volume to 30
+    - what's the weather
+  good morning:
+    - what's the date
+    - what's the weather
+    - latest news
+    - what timers do I have
+  break time:
+    - pause
+    - show desktop
+    - set a timer for 10 minutes
+
+# Extra websites for "open <name>" (built in: youtube, gmail, maps, github, ...).
+websites: {}
+#  my bank: https://www.examplebank.com
+
+# ---------- AI screen control ("take control and ...") ----------
+# Claude looks at the screen and uses your mouse and keyboard. Needs the API key above.
+# Jarvis asks "are you sure?" first. Move the mouse into a screen corner to stop it at once.
+computer_use:
+  enabled: true
+  model: ""                  # empty = same as ai.model
+  effort: medium             # low = faster, high = more careful
+  max_steps: 30              # Claude turns per task before it gives up
+
+# ---------- lists ("add milk to my shopping list") ----------
+lists_file: "~/Documents/Jarvis lists.json"
+
+# ---------- your own voice shortcuts and text snippets ----------
+# Say the phrase. open = file, folder, app or URL. keys = key combo. run = a command (always asks "are you sure?").
+shortcuts: {}
+#  open my project: {open: "C:/code/myproject"}
+#  mute teams: {keys: "ctrl+shift+m"}
+#  start backup: {run: "robocopy C:/work D:/backup /E"}
+# Say "type my address". {date} and {time} are filled in.
+snippets: {}
+#  address: "12 Main Street, Hyderabad"
+#  signature: "Thanks, Rakesh"
+
+# ---------- calendar ("what's on my calendar today", "good morning briefing") ----------
+# Google Calendar: Settings -> your calendar -> "Secret address in iCal format".
+# Outlook.com: Settings -> Calendar -> Shared calendars -> Publish -> ICS link.
+calendars: []
+#  - "https://calendar.google.com/calendar/ical/.../basic.ics"
+calendar:
+  alert_minutes: 5           # say "Meeting X starts in 5 minutes"; 0 = off
+  refresh_minutes: 10        # download the calendars again this often
+  outlook: false             # also read the Outlook desktop app calendar (needs pywin32)
+  add_with: auto             # "add meeting ... on Friday at 10": auto | outlook | google | link (always asks first)
+  default_minutes: 60
+
+# ---------- focus sessions ("start focus for 25 minutes") ----------
+# If you add a routine called "focus" under routines:, it runs when a focus session starts.
+focus:
+  work: 25                   # minutes of work per round
+  short_break: 5
+  long_break: 15
+  long_every: 4              # every 4th break is long
+  rounds: 4                  # rounds before the session ends (0 = until "stop focus")
+  dnd: true                  # turn on Do Not Disturb while focusing
+
+# ---------- health alerts (low battery, full charge, CPU hot, disk low) ----------
+alerts:
+  enabled: true
+  interval: 60               # seconds between checks
+  battery_low: 20            # percent, warn when below and not charging
+  battery_full: 100          # percent, say when reached while charging
+  cpu_high: 90               # percent
+  cpu_minutes: 2             # CPU must stay high this long
+  disk_low_gb: 5             # free space in GB
+  disk_path: "C:\\"          # drive to watch
+
+# ---------- email checking (read only, never sends or deletes) ----------
+# Gmail: turn on 2-step verification, then make an "app password" at myaccount.google.com/apppasswords.
+# Put the password in the Windows environment variable instead of here:  setx JARVIS_IMAP_PASSWORD "your-app-password"
+# Outlook.com / Microsoft 365: use provider outlook (reads the Outlook desktop app).
+email_account:
+  provider: auto             # auto | imap | outlook
+  user: ""                   # e.g. you@gmail.com
+  password: ""               # leave empty and use JARVIS_IMAP_PASSWORD
+  host: ""                   # empty = guessed from the address
+  port: 993
+  folder: INBOX
+
+# ---------- repeating reminders ("remind me to drink water every hour") ----------
+recurring_file: "~/Documents/Jarvis repeating.json"
+
+# ---------- expenses ("I spent 250 on lunch", "how much did I spend this month") ----------
+expenses_file: "~/Documents/Jarvis expenses.csv"   # opens in Excel
+currency: "₹"
+
+# ---------- recent files ("open my last download") ----------
+downloads_folder: ""         # empty = your normal Downloads folder
+
+# ---------- dictionary and Wikipedia ("define serendipity", "wikipedia Paris") ----------
+lookup:
+  wiki_lang: en              # Wikipedia language, e.g. hi for Hindi
+  sentences: 2               # how many sentences Jarvis reads
+
+# ---------- voice memos ("record a voice memo") ----------
+memos:
+  folder: "~/Documents/Jarvis memos"
+  max_seconds: 120           # longest memo
+  silence_seconds: 3         # stop after this much quiet
+  no_speech_seconds: 8       # stop if you say nothing at all
+  silence_level: 500         # raise it if a noisy room never counts as quiet
+  start_delay: 1.5
+
+# ---------- screen recording ("record my screen") ----------
+# Best with ffmpeg (free, ffmpeg.org). Without it Jarvis uses Xbox Game Bar (Win+Alt+R, one window only).
+recorder:
+  ffmpeg_path: ""            # empty = find ffmpeg in PATH
+  folder: "~/Videos/Jarvis"
+  fps: 30
+  max_minutes: 60            # 0 = no limit
+
+# ---------- phone (KDE Connect: "ring my phone", "text mom saying I'm late") ----------
+# Install: winget install KDE.KDEConnect, then pair your phone. Numbers come from contacts: above.
+phone:
+  kdeconnect_path: ""        # empty = find kdeconnect-cli automatically
+  device: ""                 # phone name or id; empty = first connected phone
+
+# ---------- smart home (Home Assistant: "turn on the bedroom light") ----------
+# Put the token in the Windows environment variable instead:  setx HASS_TOKEN "your-long-lived-token"
+home_assistant:
+  url: ""                    # e.g. "http://homeassistant.local:8123"
+  token: ""                  # leave empty and use HASS_TOKEN
+  verify_ssl: true           # false only for a self-signed https certificate at home
+  aliases: {}                # spoken name -> entity_id, e.g. {ac: climate.living_room}
+  all_off_domains: [light, fan, media_player]   # what "turn off everything" turns off
+  allowed_scripts: []        # scripts Jarvis may run, e.g. [script.movie_night]. Scenes always work.
+
+# ---------- clipboard history ("paste what I copied before") ----------
+clipboard_history:
+  enabled: true
+  max_items: 25
+  poll_seconds: 1
+  save: false                # true = keep the history in the file below between restarts
+  file: "~/.jarvis/clip_history.json"
+  skip_secrets: true         # do not keep text that looks like a password or API key
+  max_chars: 20000
+
+# ---------- Spotify ("play believer on spotify") ----------
+# Optional. Make an app at https://developer.spotify.com/dashboard, add the redirect URI below, copy the Client ID.
+# Or set the environment variable SPOTIPY_CLIENT_ID. Without it Jarvis only opens a search in the Spotify app.
+spotify:
+  client_id: ""
+  client_secret: ""          # optional (empty = safer PKCE login)
+  redirect_uri: "http://127.0.0.1:8888/callback"
+  token_cache: "~/.jarvis/spotify_token.json"
+  device: ""                 # part of a device name to prefer, e.g. "laptop"
+
+# ---------- word / quote of the day, "on this day" ----------
+daily:
+  events: 2                  # how many "on this day" events to read (1-5)
+
+# ---------- passwords and QR codes ("generate a password") ----------
+generate:
+  password_length: 16
+  pin_length: 4
+  symbols: true
+  speak_secrets: false       # true = also read the password aloud
+  clear_after: 60            # seconds before the copied password is removed from the clipboard (0 = never)
+
+# ---------- triggers ("when X happens, do Y") ----------
+# Each step is a normal command. Risky steps (shut down, delete...) are skipped, never done on their own.
+# triggers:
+#   - when: {app_opens: zoom}          # or app_closes
+#     do: ["set volume to 20"]
+#   - when: {wifi: Home}               # joined this Wi-Fi
+#     do: ["open spotify"]
+#   - when: {charger: unplugged}       # or plugged
+#     do: ["set brightness to 40"]
+#   - when: {time: "09:00", days: weekdays}
+#     do: ["open outlook"]
+#     say: "Good morning."
+
+# ---------- screen time and app limits ----------
+screentime_file: "~/.jarvis/screen time.json"
+screentime:
+  enabled: true
+  interval: 5                # seconds between checks
+  idle_minutes: 2            # not counted when you are away this long
+  keep_days: 60
+app_limits: {}               # minutes per day, e.g. {youtube: 60}. Jarvis warns you, it never closes apps.
+
+# ---------- PIN lock and guest mode ----------
+# Set a PIN once:  .venv\Scripts\python -m jarvis.actions.security set-pin   (never write the PIN itself here)
+security:
+  pin_hash: ""               # from set-pin; empty = read pin_file
+  pin_file: "~/.jarvis-pin"
+  max_tries: 3
+  lockout_minutes: 5
+  grace_seconds: 0           # after a right PIN, don't ask again for this long
+
+# ---------- command history ("what did I ask yesterday", "do that again") ----------
+history_file: "~/.jarvis/history.jsonl"
+history:
+  enabled: true
+  keep_days: 30
+
+# ---------- offline AI (Ollama) ----------
+local_ai:
+  url: http://localhost:11434
+  model: llama3.2:3b         # run "ollama pull llama3.2:3b" once
+  mode: auto                 # auto = Claude first, local when there is no key or no internet; local; cloud
+  timeout: 60
+  history_turns: 4
+
+# ---------- window layouts ----------
+layouts:
+  file: ~/.jarvis-layouts.json
+  wait_seconds: 10           # wait for started programs before moving windows
+  start_missing: true        # false = only move windows that are already open
+
+# ---------- podcasts ----------
+podcasts: {}                 # shows you always follow, e.g. {the daily: "https://feeds.simplecast.com/54nAGcIl"}
+podcasts_file: ~/.jarvis/podcasts.json
+
+# ---------- notifications ----------
+notifications:
+  announce: false                   # "announce my notifications" turns it on (saved in state_file)
+  announce_apps: [WhatsApp, Gmail]  # matches app name or title; [] = all apps
+  poll_seconds: 5
+  max_read: 5
+  state_file: ~/.jarvis/notifications.json
+
+# ---------- add to calendar (always asks first) ----------
+# (add_with and default_minutes are in the calendar: section above)
+google_calendar:
+  credentials_file: "" # OAuth "Desktop app" client JSON; empty = Google API not used
+  token_file: "~/.jarvis-google-calendar-token.json"
+  calendar_id: primary
+
+# ---------- live scores ----------
+scores:
+  teams: ["India"]                     # used when you don't say a team
+  football_leagues: ["eng.1", "uefa.champions", "esp.1", "ind.1"]
+  cricket_url: "https://static.cricinfo.com/rss/livescores.xml"
+
+# ---------- taught commands ("when I say X, do Y") ----------
+taught_file: "~/.jarvis/taught.json"
+
+# ---------- word fixes ("when you hear note pad I mean notepad", "you misheard") ----------
+corrections_file: "~/.jarvis/corrections.json"
+misheard_file: "~/.jarvis/misheard.jsonl"
+
+# ---------- voice setup (first start, or "python main.py --setup", or "run setup") ----------
+# Your answers (name, city, units, greeting) are saved in ~/.jarvis/user.json and win over this file.
+user_name: ""
+
+# ---------- maps ("how long to drive to Hyderabad") ----------
+maps:
+  home: ""                   # start point when you don't say "from"; empty = your weather city
+  units: ""                  # km | miles; empty = from weather units
+
+# ---------- habits ("I did my workout") ----------
+habits:
+  file: "~/.jarvis/habits.json"
+  remind_at: ""              # e.g. "21:00" = evening nudge for habits not done today
+
+# ---------- contacts added by voice (contacts: above still works, read-only) ----------
+contacts_file: "~/.jarvis/contacts.json"
+
+# ---------- flashcards ----------
+flashcards_file: "~/.jarvis/flashcards.json"
+
+# ---------- time tracking ("start tracking college project") ----------
+timetrack:
+  file: "~/.jarvis/timetrack.json"
+  export_file: "~/Documents/Jarvis time tracking.csv"
+
+# ---------- birthdays and anniversaries ----------
+birthdays:
+  file: "~/.jarvis/birthdays.json"
+  remind_at: "09:00"         # "" turns the daily reminder off
+  day_before: true
+
+# ---------- radio and music on this PC ----------
+# vlc_path: "C:/Program Files/VideoLAN/VLC/vlc.exe"   # else PATH, else the usual VLC folders
+music_folders: []            # extra folders, e.g. ["D:/Songs"]; your Music folder is always used
+
+# ---------- code projects ("run the tests", "git status") ----------
+devtools:
+  projects: {}               # e.g. {jarvis: {path: "C:/code/jarvis", test: "pytest -q", run: "python main.py --text"}}
+  log_file: "~/.jarvis/devtools.log"
+  timeout: 120               # seconds for git and test commands
+
+# ---------- evening recap ("how was my day") ----------
+recap:
+  at: ""                     # e.g. "21:30" = say the recap every evening; empty = only when you ask
+
+# ---------- webcam ("take a photo"; needs pip install opencv-python) ----------
+webcam:
+  camera: 0
+  open_after: true
+  # folder: "~/Pictures/Jarvis"
+
+# ---------- Hindi / Telugu commands ----------
+multilang:
+  file: ~/.jarvis/multilang.json
+  hindi_model_path: models/vosk-model-small-hi-0.22
+  whisper_model: small       # Telugu needs: pip install faster-whisper
+  min_confidence: 0.6        # English below this -> also try Hindi/Telugu
+
+# ---------- voice lock (needs pip install resemblyzer) ----------
+voiceid:
+  threshold: 0.75            # 0.5-0.99; higher = stricter
+  file: "~/.jarvis/voiceid.json"
+  samples: 5                 # sentences to read when you say "learn my voice"
