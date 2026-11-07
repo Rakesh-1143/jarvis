@@ -1,0 +1,49 @@
+pyttsx3>=2.90  # 5 tts
+PyYAML>=6.0  # 1 core
+pycaw>=20240316  # 4 actions: volume
+comtypes>=1.2  # 4 actions: volume
+screen-brightness-control>=0.20  # 4 actions: brightness
+pyautogui>=0.9.54  # 4 actions: screenshot, typing
+pyperclip>=1.8  # 4 actions: typing non-English text
+pytest>=7  # 3 nlu tests (nlu needs no packages)
+vosk>=0.3.45  # 2 stt
+sounddevice>=0.4.6  # 2 stt
+anthropic>=2.6  # AI brain (Claude API)
+psutil>=5.9  # actions: battery, CPU, memory, disk
+winrt-runtime>=2.0; sys_platform == "win32"  # actions: Wi-Fi / Bluetooth on-off
+winrt-Windows.Devices.Radios>=2.0; sys_platform == "win32"  # actions: Wi-Fi / Bluetooth on-off
+pywinauto>=0.6.8; sys_platform == "win32"  # system control: click buttons by name
+Send2Trash>=1.8  # system control: delete goes to the Recycle Bin
+Pillow>=10  # system control: screenshots for AI screen control
+winrt-Windows.Media.Control>=2.0; sys_platform == "win32"  # audio: what is playing
+icalendar>=6.0  # agenda: calendars (ICS)
+recurring-ical-events>=3.0  # agenda: repeating events
+tzdata>=2024.1; sys_platform == "win32"  # actions/convert.py: world time zones
+pywin32>=306; sys_platform == "win32"  # inbox + agenda: Outlook email and calendar
+qrcode>=7.4  # actions/generate.py: QR codes (uses Pillow)
+spotipy>=2.24  # spotify: Spotify Web API (optional; only used when a Spotify client_id is set)
+winrt-Windows.Media.Ocr>=2.0; sys_platform == "win32"  # ocr: read text on screen (offline)
+winrt-Windows.Graphics.Imaging>=2.0; sys_platform == "win32"  # ocr
+winrt-Windows.Storage.Streams>=2.0; sys_platform == "win32"  # ocr
+winrt-Windows.Foundation>=2.0; sys_platform == "win32"  # ocr
+winrt-Windows.Foundation.Collections>=2.0; sys_platform == "win32"  # ocr
+winrt-Windows.UI.Notifications>=2.0; sys_platform == "win32"  # notifications: read Windows notifications (optional)
+winrt-Windows.UI.Notifications.Management>=2.0; sys_platform == "win32"  # notifications (optional)
+# Optional, only to add events with the Google Calendar API (config google_calendar.credentials_file):
+# google-api-python-client>=2.100
+# google-auth-oauthlib>=1.2
+pystray>=0.19  # tray.py: system tray icon (uses Pillow)
+rapidfuzz>=3.0  # fuzzy.py: faster name matching ("crome" -> chrome); works without it (difflib)
+# Optional, "hey Jarvis" wake engine (config stt.wake_engine: openwakeword; pulls onnxruntime):
+# openwakeword>=0.6 ; sys_platform == "win32"
+pypdf>=4  # documents.py: read PDFs; fileconvert.py: merge PDFs
+python-docx>=1.1  # documents.py: read Word (.docx) files
+mutagen>=1.47  # localmusic.py: read song tags (optional; file names work without it)
+# Optional: exact virtual desktop control ("go to desktop 3", "move this window to desktop 2"):
+# pyvda>=0.6 ; sys_platform == "win32"
+winrt-Windows.Networking.NetworkOperators>=2.0; sys_platform == "win32"  # hotspot.py: mobile hotspot on/off (optional)
+winrt-Windows.Networking.Connectivity>=2.0; sys_platform == "win32"  # hotspot.py: internet profile (optional)
+# Optional, large: install only the ones you want.
+# opencv-python>=4.8   # webcam.py: "take a photo" (~90 MB)
+# faster-whisper>=1.0  # multilang.py: Telugu commands (model "small", ~500 MB)
+# resemblyzer          # voiceid.py: voice lock (pulls torch, ~800 MB)
